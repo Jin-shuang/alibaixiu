@@ -39,4 +39,16 @@ $('#modifyBox').on('change','#avatar', function () {
             $('#hiddenAvatar').val(response[0].avatar);
         }
     })
-})
+});
+//向服务器端发送请求，索要用户列表数据
+$.ajax({
+    type:'get',
+    url:'/users',
+    success: function (response) { 
+        console.log(response); 
+        //使用模版引擎将数据和html字符串进行拼接
+        var html = template('userTpl',{data: response});
+        //将拼接好的字符串显示在页面中
+        $('#userBox').html(html);
+    }
+});
