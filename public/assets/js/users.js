@@ -68,7 +68,7 @@ $('#userBox').on('click','.edit', function () {
         }
     })
 })
-//
+//为修改表单添加表单添加事件
 $('#modifyBox').on('submit', '#modifyForm', function () {  
     //
     let id = $(this).attr('data-id');
@@ -81,4 +81,76 @@ $('#modifyBox').on('submit', '#modifyForm', function () {
             location.reload();
         }
     })
+})
+//当删除按钮被点击的时候
+$('#userBox').on('click','.delete', function () {  
+    //如果管理员确认要删除用户
+    if(confirm('你确定要删除用户吗？')){
+        //获取到即将要删除的用户的id
+        let id = $(this).attr('data-id');
+        alert(id);
+        //向服务器端发送请求，删除用户
+        $.ajax({
+            type:'delete',
+            url:`/users/${id}`,
+            success: function () {  
+                location.reload();
+            }
+        })
+    }
+})
+//获取全选按钮
+let selectAll = $('#selectAll');
+//获取批量删除按钮
+let deleteMany = $('#deleteMany');
+//当全选按钮状态发生改变时
+selectAll.on('change', function () {  
+    //获取到全选按钮当前的状态
+    let status = $(this).prop('checked');
+    if(status){
+        //显示批量操作按钮
+        deleteMany.show();
+    } else {
+        //隐藏批量操作按钮
+        deleteMany.hide();
+    }
+    //获取到所有的用户并将用户的状态和全选按钮保持一致
+    $("#userBox").find('input').prop('checked',status);
+})
+//当用户前面的复选框状态发生改变时
+$('#userBox').on('change','.userStatus', function () { 
+    // 获取到所有用户，在所有用户中过滤出选中的用户
+    let inputs = $('#userBox').find('input');
+    //判断所有用户的数量和选中用户的数量是否一致
+    if(inputs.length == inputs.filter(':checked').length){
+        selectAll.prop('checked',true);
+    }else {
+        selectAll.prop('checked',false);
+    }
+    //如果选中的复选框的数量大于0，就说明有选中的复选框
+    if(inputs.filter(':checked').length > 0){
+        deleteMany.show();
+    } else {
+        deleteMany.hide();
+    }
+})
+//
+deleteMany.on('click', function () {  
+    let ids = [];
+    //获取选中的用户
+    let checkedUser = $('#userBox').find('input').filter(':checked');
+    //循环复选框，从复选框元素身上获取data-id属性的值
+    checkedUser.each(function (index,element) {  
+        ids.push($(element).attr('data-id'));
+        //element.dataset.id;原生获取ID的方法
+    })
+    if(confirm('你确定要进行批量删除操作吗？')){
+        $.ajax({
+            type:'delete',
+            url:`/users/${ids.join('-')}`,
+            success: function () {  
+                location.reload();
+            }
+        })
+    }
 })
