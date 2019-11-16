@@ -14,7 +14,7 @@ $('#addCategory').on('submit', function () {
     //阻止表单默认提交行为
     return false;
 })
-//发送ajax请求 向服务器端所有分类列表数据
+//发送ajax请求 向服务器端索要分类列表数据
 $.ajax({
     type:'get',
     url:'/categories',
