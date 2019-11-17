@@ -10,12 +10,7 @@ $.ajax({
         $('#page').html(page);
     },
 })
-//处理日期时间格式
-function formateDate(date) {  
-  // 将日期时间字符串转换成日期对象
-    date = new Date(date);
-    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-}
+
 //分页
 function changePage(page) {  
     //向服务器端发送请求获取文章列表数据
@@ -61,4 +56,51 @@ $('#filterForm').on('submit', function () {
         }
     });
     return false;
+})
+
+//当删除按钮被点击的时候
+$('#postsBox').on('click','.delete', function () {  
+    //弹出删除确认框和管理员确认是否真的要进行删除操作
+    if(confirm('您真的要进行删除操作吗')) {
+        //获取到管理员要删除的文章的id
+        let id = $(this).attr('data-id');
+        //向服务器端发送请求执行删除操作
+        $.ajax({
+            type:'delete',
+            url:`/posts/${id}`,
+            success: function () {  
+                location.reload();
+            }
+        })
+    }
+})
+//模态框
+var id, userId;
+$('#postsBox').on('click','.postCom', function () {  
+    $('#exampleModal').modal('show')
+    id = $(this).data('id')
+    console.log(id, 678);
+    userId = JSON.parse(localStorage.getItem('user'))._id
+    console.log(userId, 444);
+})
+
+$('.addCom').on('click', function () {  
+    var content = $('#message-text').val()
+    console.log(content);
+    $.ajax({
+        type:'post',
+        url:'/comments',
+        data:{
+            author:userId,
+            content:content,
+            post:id,
+        },
+        success: function (res) {  
+            console.log('发布成功');
+            $('#exampleModal').modal('hide')
+        },
+        error: function (err) {  
+            alert('添加失败')
+        }
+    })
 })

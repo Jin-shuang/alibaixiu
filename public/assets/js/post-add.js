@@ -26,7 +26,7 @@ $('#feature').on('change', function () {
         // 告诉$.ajax方法不要设置参数类型
         contentType:false,
         success: function (response) {  
-            console.log(response);
+            // console.log(response);
             $('#thumbnail').val(response[0].cover);
         }
     })
@@ -45,5 +45,56 @@ $('#addForm').on('submit', function () {
             location.href = '/admin/posts.html'
         }
     });
+    return false;
+})
+//获取浏览器地址栏中的id参数
+let id = getUrlParams('id');
+//当前管理员是在做修改文章操作
+if(id != -1){
+    //根据id获取文章的详细信息
+    $.ajax({
+        type:'get',
+        url:`/posts/${id}`,
+        success: function (response) { 
+            $.ajax({
+                type:'get',
+                url:'/categories',
+                success: function (categories) { 
+                    response.categories = categories;
+                    console.log(response);
+                    let html = template('modifyTpl',response);
+                    $('#parentBox').html(html);
+                }
+            })
+        }
+    })
+}
+//封装一个获取url后面id的函数
+//从浏览器的地址栏中获取查询参数
+function getUrlParams(name) {  
+    let paramsAry = location.search.substr(1).split('&');
+    //循环数据
+    for(let i = 0;i < paramsAry.length; i++){
+        let tmp = paramsAry[i].split('=');
+        if(tmp[0] == name){
+            return tmp[1];
+        }
+    }
+    return -1;
+}
+//当修改文章信息表单发生提交行为的时候
+$('#parentBox').on('submit','#modifyForm',function () {  
+    //获取管理员在表单中输入的内容
+    let formData = $(this).serialize();
+    //
+    let id = $(this).attr('data-id');
+    $.ajax({
+        type:'put',
+        url:`/posts/${id}`,
+        data:formData,
+        success: function () {  
+            location.href = '/admin/posts.html'
+        }
+    })
     return false;
 })
