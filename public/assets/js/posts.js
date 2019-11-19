@@ -25,7 +25,7 @@ function changePage(page) {
             let html = template('postsTpl',response);
             $('#postsBox').html(html);
             let page = template('pageTpl',response);
-            $('#page').html(page);
+            // $('#page').html(page);
         }
     })
 }

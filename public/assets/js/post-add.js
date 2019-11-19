@@ -26,7 +26,7 @@ $('#feature').on('change', function () {
         // 告诉$.ajax方法不要设置参数类型
         contentType:false,
         success: function (response) {  
-            // console.log(response);
+            console.log(response);
             $('#thumbnail').val(response[0].cover);
         }
     })
@@ -61,7 +61,7 @@ if(id != -1){
                 url:'/categories',
                 success: function (categories) { 
                     response.categories = categories;
-                    console.log(response);
+                    // console.log(response);
                     let html = template('modifyTpl',response);
                     $('#parentBox').html(html);
                 }

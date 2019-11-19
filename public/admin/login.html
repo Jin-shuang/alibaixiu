@@ -52,9 +52,12 @@
           password:password,
         },
         success: function (response) {
-          localStorage.setItem('user',JSON.stringify(response)) 
-          //登陆成功跳转到数据管理页面  
-          location.href = 'index.html'
+          if(response.role == 'admin'){
+            //登陆成功跳转到数据管理页面  
+            location.href = '/admin/index.html';
+          } else {
+            location.href = '/index.html';
+          }
         },
         error: function () {  
           //登陆失败

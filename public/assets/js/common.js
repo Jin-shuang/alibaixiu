@@ -19,9 +19,11 @@ function formateDate(date) {
     date = new Date(date);
     return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 }
+let user = JSON.parse(localStorage.getItem('user'));
+// console.log(user);
 $.ajax({
   type:'get',
-  url:`/users/${userId}`,
+  url:`/users/${user._id}`,
   success: function (response) {  
     //获取到相应信息后，展示在页面
     $('.avatar').attr('src',response.avatar);
